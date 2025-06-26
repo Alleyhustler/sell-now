@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELLNOW Terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+            background: #000000;
+            color: #ffffff;
+            font-size: 12px;
+            line-height: 1.2;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .terminal {
+            display: grid;
+            grid-template-columns: 280px 1fr 240px;
+            grid-template-rows: 42px 1fr 32px;
+            height: 100vh;
+            background: #000000;
+        }
+        
+        .top-bar {
+            grid-column: 1 / -1;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid #333333;
+            font-size: 11px;
+        }
+        
+        .terminal-title {
+            color: #ffffff;
+            font-weight: 600;
+            margin-right: 24px;
+        }
+        
+        .terminal-info {
+            color: #888888;
+            margin-right: auto;
+        }
+        
+        .social-link {
+            color: #666666;
+            text-decoration: none;
+            font-size: 10px;
+            margin-left: 16px;
+            transition: color 0.1s;
+        }
+        
+        .social-link:hover {
+            color: #ffffff;
+        }
+        
+        .left-panel {
+            background: #0a0a0a;
+            border-right: 1px solid #333333;
+            padding: 16px 12px;
+        }
+        
+        .section {
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            color: #666666;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 4px;
+        }
+        
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px solid #111111;
+            font-size: 11px;
+        }
+        
+        .data-row:last-child {
+            border-bottom: none;
+        }
+        
+        .data-label {
+            color: #888888;
+        }
+        
+        .data-value {
+            color: #ffffff;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .chart-area {
+            background: #000000;
+            position: relative;
+            padding: 16px;
+        }
+        
+        .price-info {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #333333;
+            border-radius: 2px;
+            padding: 8px 12px;
+            font-size: 11px;
+        }
+        
+        .price-main {
+            font-size: 20px;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .price-change {
+            font-size: 10px;
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .price-up { color: #00ff88; }
+        .price-down { color: #ff4444; }
+        
+        .right-panel {
+            background: #0a0a0a;
+            border-left: 1px solid #333333;
+            padding: 16px 12px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .metric-card {
+            background: #111111;
+            border: 1px solid #222222;
+            padding: 8px;
+            border-radius: 2px;
+        }
+        
+        .metric-label {
+            font-size: 9px;
+            color: #666666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .metric-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .action-section {
+            margin-top: 24px;
+        }
+        
+        .execute-btn {
+            width: 100%;
+            height: 36px;
+            background: #ff4444;
+            border: none;
+            color: #ffffff;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background-color 0.1s;
+        }
+        
+        .execute-btn:hover {
+            background: #ff3333;
+        }
+        
+        .execute-btn:active {
+            background: #cc2222;
+        }
+        
+        .status-bar {
+            grid-column: 1 / -1;
+            background: #1a1a1a;
+            border-top: 1px solid #333333;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 10px;
+            color: #666666;
+        }
+        
+        .status-item {
+            margin-right: 24px;
+        }
+        
+        .status-value {
+            color: #ffffff;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        
+        .multiplier-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ff4444;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .streak-badge {
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            background: #0a1a0a;
+            border: 1px solid #00ff88;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 500;
+            color: #00ff88;
+            text-transform: uppercase;
+        }
+        
+        .market-status {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #333333;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 9px;
+            color: #ff4444;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .alert {
+            position: fixed;
+            top: 60px;
+            right: 16px;
+            background: #1a1a1a;
+            border: 1px solid;
+            padding: 8px 12px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(300px);
+            transition: transform 0.2s ease;
+        }
+        
+        .alert.show {
+            transform: translateX(0);
+        }
+        
+        .alert.success {
+            color: #00ff88;
+            border-color: #00ff88;
+        }
+        
+        .alert.error {
+            color: #ff4444;
+            border-color: #ff4444;
+        }
+        
+        .green { color: #00ff88; }
+        .red { color: #ff4444; }
+        .yellow { color: #ffff00; }
+                            .twitter-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.15s ease;
+            margin-right: 24px;
+        }
+        
+        .twitter-link:hover {
+            color: #ffffff;
+        }
+        
+        .twitter-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+
+                .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-img {
+    width: 200px;
+    height: 200px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="top-bar">
+                                    <a href="https://twitter.com/sellnowcoin" target="_blank" class="twitter-link">
+                    <svg class="twitter-icon" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    Follow @SellNowCoin
+                </a>
+            <span class="terminal-title">SELLNOW.TERMINAL</span>
+            <span class="terminal-info">REAL-TIME TRADING SIMULATION</span>
+            <a href="https://twitter.com/sellnowcoin" target="_blank" class="social-link">@SELLNOWCOIN</a>
+        </div>
+        
+        <div class="left-panel">
+            <div class="section">
+                <div class="section-header">PORTFOLIO</div>
+                <div class="data-row">
+                    <span class="data-label">SELLNOW</span>
+                    <span class="data-value" id="token-balance">1,000,000</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">USDT</span>
+                    <span class="data-value" id="usdt-balance">0.00</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">TOTAL</span>
+                    <span class="data-value" id="portfolio-total">$1,000</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">PERFORMANCE</div>
+                <div class="data-row">
+                    <span class="data-label">P&L</span>
+                    <span class="data-value" id="pnl">$0.00</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">SCORE</span>
+                    <span class="data-value" id="score">0</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">LEVEL</span>
+                    <span class="data-value" id="level">1</span>
+                </div>
+            </div>
+                                    <div class="logo">
+                <img src="Scroll_Of_Rugs__1_-removebg-preview.png" alt="SellNowCoin" class="logo-img">
+            </div>
+        </div>
+        
+        <div class="chart-area">
+            <canvas id="priceChart"></canvas>
+            <div class="price-info">
+                <div class="price-main" id="current-price">0.001000</div>
+                <div class="price-change" id="price-change">+0.00%</div>
+            </div>
+            <div class="multiplier-badge" id="multiplier">1.0X</div>
+            <div class="streak-badge" id="streak">STREAK: 0</div>
+            <div class="market-status">ULTRA SPEED</div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">TRADES</div>
+                    <div class="metric-value" id="total-trades">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">WIN %</div>
+                    <div class="metric-value" id="win-rate">0</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">STATISTICS</div>
+                <div class="data-row">
+                    <span class="data-label">BEST STREAK</span>
+                    <span class="data-value" id="best-streak">0</span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">HIGH SCORE</span>
+                    <span class="data-value" id="high-score">0</span>
+                </div>
+            </div>
+            
+            <div class="action-section">
+                <button class="execute-btn" id="sellButton">EXECUTE SELL</button>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                SESSION: <span class="status-value" id="session-time">00:00:00</span>
+            </div>
+            <div class="status-item">
+                LATENCY: <span class="status-value">0.1ms</span>
+            </div>
+            <div class="status-item">
+                STATUS: <span class="status-value green">CONNECTED</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert" id="notification"></div>
+
+    <script>
+        class SellNowTerminal {
+            constructor() {
+                this.canvas = document.getElementById('priceChart');
+                this.ctx = this.canvas.getContext('2d');
+                this.price = 0.001;
+                this.priceHistory = [];
+                this.gameState = {
+                    score: 0,
+                    level: 1,
+                    streak: 0,
+                    bestStreak: 0,
+                    totalTrades: 0,
+                    wins: 0,
+                    tokenBalance: 1000000,
+                    usdtBalance: 0,
+                    portfolioValue: 1000,
+                    pnl: 0
+                };
+                this.marketTrend = 'neutral';
+                this.trendDuration = 0;
+                this.multiplier = 1.0;
+                this.sessionStart = Date.now();
+                
+                this.initCanvas();
+                this.initEventListeners();
+                this.startTerminal();
+            }
+            
+            initCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+                window.addEventListener('resize', () => {
+                    this.canvas.width = this.canvas.offsetWidth;
+                    this.canvas.height = this.canvas.offsetHeight;
+                });
+            }
+            
+            initEventListeners() {
+                document.getElementById('sellButton').addEventListener('click', () => this.executeSell());
+            }
+            
+            generatePriceData() {
+                if (this.trendDuration <= 0) {
+                    this.marketTrend = Math.random() > 0.5 ? 'bull' : 'bear';
+                    this.trendDuration = Math.floor(Math.random() * 80) + 40;
+                }
+                
+                const volatility = 0.015 + (this.gameState.level * 0.003);
+                const speed = 0.9 + (this.gameState.level * 0.08);
+                
+                let change = 0;
+                if (this.marketTrend === 'bull') {
+                    change = (Math.random() * volatility * 2 - volatility * 0.3) * speed;
+                } else {
+                    change = (Math.random() * volatility * 2 - volatility * 1.7) * speed;
+                }
+                
+                if (Math.random() < 0.08) {
+                    change *= (Math.random() * 2.5 + 1);
+                }
+                
+                this.price += change;
+                this.price = Math.max(0.0001, this.price);
+                this.trendDuration--;
+                
+                const momentum = this.priceHistory.length > 8 ? 
+                    (this.price - this.priceHistory[this.priceHistory.length - 8]) / this.priceHistory[this.priceHistory.length - 8] : 0;
+                this.multiplier = 1 + Math.abs(momentum) * 25;
+                this.multiplier = Math.min(this.multiplier, 6.0);
+            }
+            
+            executeSell() {
+                if (this.gameState.tokenBalance <= 0) return;
+                
+                const sellAmount = Math.min(100000, this.gameState.tokenBalance);
+                const sellValue = sellAmount * this.price;
+                
+                const recentPrices = this.priceHistory.slice(-15);
+                const avgPrice = recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length;
+                const momentum = this.priceHistory.length > 4 ? 
+                    (this.price - this.priceHistory[this.priceHistory.length - 4]) / this.priceHistory[this.priceHistory.length - 4] : 0;
+                
+                const isOptimalSell = this.price > avgPrice * 1.018 || (momentum < -0.008 && this.price > avgPrice);
+                
+                this.gameState.totalTrades++;
+                
+                if (isOptimalSell) {
+                    this.gameState.wins++;
+                    this.gameState.streak++;
+                    this.gameState.bestStreak = Math.max(this.gameState.bestStreak, this.gameState.streak);
+                    
+                    const points = Math.floor(sellValue * this.multiplier * (1 + this.gameState.streak * 0.08));
+                    this.gameState.score += points;
+                    this.gameState.pnl += sellValue * 0.15;
+                    
+                    this.showAlert(`OPTIMAL EXECUTION +${points}PTS [${this.multiplier.toFixed(1)}X]`, 'success');
+                } else {
+                    this.gameState.streak = 0;
+                    const penalty = Math.floor(sellValue * 0.4);
+                    this.gameState.score = Math.max(0, this.gameState.score - penalty);
+                    this.gameState.pnl -= sellValue * 0.08;
+                    
+                    this.showAlert(`SUBOPTIMAL TIMING -${penalty}PTS`, 'error');
+                }
+                
+                this.gameState.tokenBalance -= sellAmount;
+                this.gameState.usdtBalance += sellValue;
+                this.gameState.portfolioValue = this.gameState.tokenBalance * this.price + this.gameState.usdtBalance;
+                
+                if (this.gameState.score > this.gameState.level * 1200) {
+                    this.gameState.level++;
+                    this.showAlert(`LEVEL ${this.gameState.level} UNLOCKED`, 'success');
+                }
+                
+                if (this.gameState.tokenBalance < 50000) {
+                    this.gameState.tokenBalance = 1000000;
+                    this.gameState.usdtBalance = 0;
+                }
+                
+                this.updateInterface();
+            }
+            
+            showAlert(message, type) {
+                const alert = document.getElementById('notification');
+                alert.textContent = message;
+                alert.className = `alert ${type}`;
+                alert.classList.add('show');
+                
+                setTimeout(() => {
+                    alert.classList.remove('show');
+                }, 2500);
+            }
+            
+            updateInterface() {
+                document.getElementById('current-price').textContent = this.price.toFixed(6);
+                
+                const change = this.priceHistory.length > 1 ? 
+                    ((this.price - this.priceHistory[this.priceHistory.length - 2]) / this.priceHistory[this.priceHistory.length - 2]) * 100 : 0;
+                
+                const changeEl = document.getElementById('price-change');
+                changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(3)}%`;
+                changeEl.className = change >= 0 ? 'price-change price-up' : 'price-change price-down';
+                
+                document.getElementById('score').textContent = this.gameState.score.toLocaleString();
+                document.getElementById('level').textContent = this.gameState.level;
+                document.getElementById('streak').textContent = `STREAK: ${this.gameState.streak}`;
+                document.getElementById('multiplier').textContent = `${this.multiplier.toFixed(1)}X`;
+                
+                document.getElementById('token-balance').textContent = this.gameState.tokenBalance.toLocaleString();
+                document.getElementById('usdt-balance').textContent = this.gameState.usdtBalance.toFixed(2);
+                document.getElementById('portfolio-total').textContent = `$${this.gameState.portfolioValue.toFixed(0)}`;
+                document.getElementById('pnl').textContent = `$${this.gameState.pnl.toFixed(2)}`;
+                
+                document.getElementById('total-trades').textContent = this.gameState.totalTrades;
+                document.getElementById('win-rate').textContent = this.gameState.totalTrades > 0 ? 
+                    Math.round((this.gameState.wins / this.gameState.totalTrades) * 100) : 0;
+                document.getElementById('best-streak').textContent = this.gameState.bestStreak;
+                document.getElementById('high-score').textContent = this.gameState.score.toLocaleString();
+                
+                // Update session time
+                const elapsed = Math.floor((Date.now() - this.sessionStart) / 1000);
+                const hours = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+                const minutes = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+                const seconds = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('session-time').textContent = `${hours}:${minutes}:${seconds}`;
+                
+                // Update P&L color
+                const pnlEl = document.getElementById('pnl');
+                pnlEl.className = 'data-value ' + (this.gameState.pnl >= 0 ? 'green' : 'red');
+            }
+            
+            renderChart() {
+                const ctx = this.ctx;
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, width, height);
+                
+                if (this.priceHistory.length < 2) return;
+                
+                const visible = this.priceHistory.slice(-150);
+                const maxPrice = Math.max(...visible);
+                const minPrice = Math.min(...visible);
+                const range = maxPrice - minPrice || 0.0001;
+                
+                // Draw grid
+                ctx.strokeStyle = '#111111';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= 8; i++) {
+                    const y = (i / 8) * height;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Draw price line
+                ctx.strokeStyle = '#00ff88';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                for (let i = 0; i < visible.length; i++) {
+                    const x = (i / (visible.length - 1)) * width;
+                    const y = height - ((visible[i] - minPrice) / range) * height;
+                    
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            
+            mainLoop() {
+                this.generatePriceData();
+                this.priceHistory.push(this.price);
+                
+                if (this.priceHistory.length > 800) {
+                    this.priceHistory = this.priceHistory.slice(-400);
+                }
+                
+                this.renderChart();
+                this.updateInterface();
+                
+                setTimeout(() => this.mainLoop(), 45);
+            }
+            
+            startTerminal() {
+                this.price = 0.001;
+                this.priceHistory = [this.price];
+                this.updateInterface();
+                this.mainLoop();
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            new SellNowTerminal();
+        });
+    </script>
+</body>
+</html>
